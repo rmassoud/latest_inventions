@@ -1,0 +1,6 @@
+name = Latest Inventions
+description = "A module to display the latest 5 updated articles that have the word \"Invention\" in the title."
+package = custom
+core = 7.x
+dependencies[] = drupal:block
+dependencies[] = drupal:system (>= 7.40)

@@ -1,0 +1,74 @@
+<?php
+/**
+ * @file
+ * Module file for latest_inventions.
+ */
+
+/**
+ * Implements hook_block_info().
+ *
+ */
+function latest_inventions_block_info() {
+
+  $blocks['latest_inventions'] = array(
+    'info' => t('Latest inventions'),
+    'status' => TRUE,
+    'region' => 'content',
+    'visibility' => BLOCK_VISIBILITY_LISTED,
+    'pages' => '<front>',
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ */
+function latest_inventions_block_view($delta = '') {
+  switch ($delta) {
+    case 'latest_inventions':
+      $block['subject'] = t('Latest inventions');
+      $block['content'] = _latest_inventions_contents();
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function latest_inventions_theme($existing, $type, $theme, $path) {
+    return array(
+        'latest_inventions_list' => array(
+            'variables' => array(
+            	'nodes' => NULL
+            ),
+            'template' => 'templates/latest-inventions-list',
+        ),
+    );
+}
+
+/**
+* Implements hook_entity_info_alter().
+*/
+function MYMODULE_entity_info_alter(&$entity_info) {
+  $entity_info['node']['view modes']['another_teaser'] = array(
+    'label' => t('Latest articles'),
+    'custom settings' => TRUE,
+  );
+}
+
+function _latest_inventions_contents() {
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'article')
+    ->propertyCondition('title', 'invention', 'CONTAINS')
+    ->range(0,5)
+    ->propertyOrderBy('changed', 'DESC')
+    ->execute();
+  $nids = array_keys($result['node']);
+  $nodes = node_load_multiple($nids);
+  return theme('latest_inventions_list', array('nodes' => $nodes));
+}
