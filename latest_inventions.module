@@ -36,7 +36,8 @@ function latest_inventions_block_view($delta = '') {
 }
 
 /**
- * Implements hook_theme().
+ * Implements hook_theme()
+ *
  */
 function latest_inventions_theme($existing, $type, $theme, $path) {
     return array(
@@ -50,15 +51,10 @@ function latest_inventions_theme($existing, $type, $theme, $path) {
 }
 
 /**
-* Implements hook_entity_info_alter().
-*/
-function MYMODULE_entity_info_alter(&$entity_info) {
-  $entity_info['node']['view modes']['another_teaser'] = array(
-    'label' => t('Latest articles'),
-    'custom settings' => TRUE,
-  );
-}
-
+ * Fetch the content from the database and return the themed output
+ * @return mixed
+ * 
+ */
 function _latest_inventions_contents() {
   $query = new EntityFieldQuery();
   $result = $query
